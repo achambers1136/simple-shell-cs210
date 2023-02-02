@@ -28,6 +28,10 @@ int main ( int argc, char* argv[] ) {
         for (int i = 0; i<n; i++) {
             printf("[%d]: '%s'\n", i, tokens[i]);
         }
+
+        if (n > 0) {
+            if (strcmp(tokens[0], "exit") == 0) break; // exit
+        }
     }
 
     return 0;
