@@ -3,14 +3,18 @@
 
 int main ( int argc, char* argv[] ) {
 
+    printf("$w4g$h311 initialised.\n\n");
+
     while(1) {
-        printf("\n> ");
+        printf("> ");
         char inp[512];
         char* splt; // token splitter
         char* tokens[256];
         int n = 0; // token count
 
-        fgets(inp, 255, stdin); // read 255 chars from cli
+        if (fgets(inp, 255, stdin) == NULL)
+            break; // break if CTRL+D
+
         inp[strcspn(inp, "\n")] = 0; // removes newline from end
 
         splt = strtok(inp, " \t|><&;"); // split by delimiter chars
