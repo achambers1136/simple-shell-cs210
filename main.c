@@ -26,7 +26,7 @@ int main ( int argc, char* argv[] ) {
         int n = 0; // token count
 
         /* Read and parse user input */
-        if (fgets(inp, 255, stdin) == NULL)
+        if (fgets(inp, 512, stdin) == NULL)
             break; // break if CTRL+D
 
         inp[strcspn(inp, "\n")] = 0; // removes newline from end
