@@ -1,3 +1,3 @@
 /* parser.h */
 
-int shell_exec( char* inp, char* rest );
+int parseDelimiterArray(char* arr[], char* str, char* delims);

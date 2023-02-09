@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "parser.h"
+#include "executor.h"
 
 int main ( int argc, char* argv[] ) {
 
@@ -36,8 +37,22 @@ int main ( int argc, char* argv[] ) {
         
         inp[strcspn(inp, "\n")] = 0; // removes newline from end
 
-        // Executes input and returns exit code
-        status = shell_exec(inp, NULL);
+        char* cmds[50];                                 // stores commands split by ';'
+        int cn = parseDelimiterArray(cmds, inp, ";");   // gets number of tokens within newly filled + tokenised 'cmds' array
+
+        for (int i=0; i<cn; i++) {
+            printf("[%d] %s\n", i, cmds[i]);//stage1 temp // parsing doesn't happen correctly if this line isn't present. why???
+
+            char* tokens[50];   // stores tokenised command split by delimiters
+            int tn = parseDelimiterArray(tokens, cmds[i], " \t\n|><&"); // get number of tokens within newly filled + tokenised 'tokens' array
+
+            for (int j=0; j<tn; j++) {
+                printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 temp
+            }
+            
+            // Execute command
+            status = shell_exec(tn, tokens);
+        }
 
         if (status == 70) break; // custom final exit code
     }
