@@ -4,11 +4,10 @@
 #include <string.h>
 
 int parseDelimiterArray(char* arr[], char* str, char* delims) {
-    char* split;
-    char* rest = str;
-    int n;
+    char* split = NULL;
+    int n = 0;
 
-    while ((split = strtok_r(rest, delims, &rest)))
+    while ((split = strtok_r(str, delims, &str)))
         arr[n++] = strdup(split);
 
     arr[n] = NULL;
