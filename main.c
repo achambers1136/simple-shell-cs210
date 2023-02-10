@@ -41,13 +41,13 @@ int main ( int argc, char* argv[] ) {
         int cn = parseDelimiterArray(cmds, inp, ";");   // gets number of tokens within newly filled + tokenised 'cmds' array
 
         for (int i=0; i<cn; i++) {
-            printf("[%d] %s\n", i, cmds[i]);//stage1 temp // parsing doesn't happen correctly if something with regard to 'i' isn't printed. why???
+            //printf("[%d] %s\n", i, cmds[i]);//stage1 debug
 
             char* tokens[50];   // stores tokenised command split by delimiters
             int tn = parseDelimiterArray(tokens, cmds[i], " \t\n|><&"); // get number of tokens within newly filled + tokenised 'tokens' array
 
             for (int j=0; j<tn; j++) {
-                printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 temp
+                //printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 debug
             }
             
             // Execute command
