@@ -9,7 +9,7 @@ int parseDelimiterArray(char* arr[], char* str, char* delims) {
     int n;
 
     while ((split = strtok_r(rest, delims, &rest)))
-        arr[n++] = split;
+        arr[n++] = strdup(split);
 
     arr[n] = NULL;
     
