@@ -20,15 +20,20 @@ int shell_exec_ext(int argc, char* argv[]) {
 
     if (res == 0) {
         char* PATH_spl;
-        char* rest = getenv("PATH"); // likely replace this with global path once implemented, doesn't support current dir
+        char* rest = getenv("PATH"); // likely replace this with global path once implemented, doesn't contain current dir
         int status = -1;
+
+        // Support for current dir, ideally should be included in path however
+        char lpath[512] = "./";
+        strcat(lpath, argv[0]);
+        status = execv(lpath, argv);
 
         while ((PATH_spl = strtok_r(rest, ":", &rest)) && status == -1) {
             char* path = strdup(PATH_spl);
-                  path = strcat( strcat(path, "/"), argv[0] );
+            strcat(strcat(path, "/"), argv[0]);
             //printf("[trying %s]\n", path);
             status = execv(path, argv);
-        } 
+        }
 
         //printf("Child process finished. (status %d)\n", status);
         if (status != 0) fprintf(stderr, "'%s' is not recognised as a file or internal/external command.\n", argv[0]);
