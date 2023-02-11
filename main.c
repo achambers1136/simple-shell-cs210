@@ -46,9 +46,9 @@ int main ( int argc, char* argv[] ) {
             char* tokens[50];   // stores tokenised command split by delimiters
             int tn = parseDelimiterArray(tokens, cmds[i], " \t\n|><&"); // get number of tokens within newly filled + tokenised 'tokens' array
 
-            for (int j=0; j<tn; j++) {
-                //printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 debug
-            }
+            /*for (int j=0; j<tn; j++) {
+                printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 debug
+            }*/
             
             // Execute command
             status = shell_exec(tn, tokens);
