@@ -29,8 +29,8 @@ int main ( int argc, char* argv[] ) {
 
         /* Read and parse user input */
         if (fgets(inp, 512, stdin) == NULL) {
-            status = 70;
-            break; // break if CTRL+D
+            printf("^D\n");
+            status = 70; break; // break if CTRL+D
         }
         
         if (strcmp(inp, "\n") == 0) continue; // reprompts if empty line
@@ -58,6 +58,7 @@ int main ( int argc, char* argv[] ) {
     }
 
     /* End while */
+    printf("Exiting $w4g$h311...\n");
     /* Save history */
 
     /* Save aliases */
