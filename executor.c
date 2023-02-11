@@ -36,7 +36,11 @@ int shell_exec_ext(int argc, char* argv[]) {
         }
 
         //printf("Child process finished. (status %d)\n", status);
-        if (status != 0) fprintf(stderr, "'%s' is not recognised as a file or internal/external command.\n", argv[0]);
+        if (status != 0) {
+            fprintf(stderr, "'%s' is not recognised as a file or internal/external command: ", argv[0]);
+            perror("\0");
+        }
+        
         exit(status);
     } else {
         wait(NULL);
