@@ -4,15 +4,16 @@
 #include <string.h>
 
 int parseDelimiterArray(char* arr[], char* str, char* delims) {
-    char* split;
-    char* rest = str;
-    int n;
+    char* split = NULL;
+    int n = 0;
 
-    while ((split = strtok_r(rest, delims, &rest)))
-        arr[n++] = split;
+    while ((split = strtok_r(str, delims, &str)))
+        arr[n++] = strdup(split);
+
+    arr[n] = NULL;
     
     if (n > 50) {
-        printf("ERROR: Exceeded token limit (50). Total number of commands/arguments cannot exceed this value.\n");
+        fprintf(stderr, "ERROR: Exceeded token limit (50). Total number of commands/arguments cannot exceed this value.\n");
         return -1;
     }
     

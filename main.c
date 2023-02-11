@@ -29,8 +29,8 @@ int main ( int argc, char* argv[] ) {
 
         /* Read and parse user input */
         if (fgets(inp, 512, stdin) == NULL) {
-            status = 70;
-            break; // break if CTRL+D
+            printf("^D\n");
+            status = 70; break; // break if CTRL+D
         }
         
         if (strcmp(inp, "\n") == 0) continue; // reprompts if empty line
@@ -41,14 +41,14 @@ int main ( int argc, char* argv[] ) {
         int cn = parseDelimiterArray(cmds, inp, ";");   // gets number of tokens within newly filled + tokenised 'cmds' array
 
         for (int i=0; i<cn; i++) {
-            printf("[%d] %s\n", i, cmds[i]);//stage1 temp // parsing doesn't happen correctly if this line isn't present. why???
+            //printf("[%d] %s\n", i, cmds[i]);//stage1 debug
 
             char* tokens[50];   // stores tokenised command split by delimiters
             int tn = parseDelimiterArray(tokens, cmds[i], " \t\n|><&"); // get number of tokens within newly filled + tokenised 'tokens' array
 
-            for (int j=0; j<tn; j++) {
-                printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 temp
-            }
+            /*for (int j=0; j<tn; j++) {
+                printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 debug
+            }*/
             
             // Execute command
             status = shell_exec(tn, tokens);
@@ -58,6 +58,7 @@ int main ( int argc, char* argv[] ) {
     }
 
     /* End while */
+    printf("Exiting $w4g$h311...\n");
     /* Save history */
 
     /* Save aliases */
