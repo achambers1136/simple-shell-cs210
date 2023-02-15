@@ -5,20 +5,30 @@
 #include "parser.h"
 #include "executor.h"
 #include <stdlib.h>
+#include <unistd.h>
+
+void setPath(char* path){
+    setenv("PATH", path,1);
+}
+void getPath(){
+    printf(getenv("PATH"));
+    printf("\n");
+}
 
 int main ( int argc, char* argv[] ) {
 
     /* Shell Execution Outline */
     /* Save the current path */
-    char* orgPath = genenv("PATH");
+    char* orgPath = getenv("PATH");
+    getPath();
     /* Find the user home directory from the environment */
-    char* homeDirectory = genenv("HOME)");
+    char* homeDirectory = getenv("HOME)");
     /* Set current working directory to user home directory */
-    chdir(homeDirectory);
-    if (getcwd(homeDirectory, sizeof(homeDirectory)) != NULL){
+    int ch = chdir(homeDirectory);
+    if (ch == 0){
         printf("current working directory is %s\n", homeDirectory);
     }    else{
-        printf("uh oh current working directory has not been set to home");
+        printf("uh oh current working directory has not been set to home ");
     }
     
 
@@ -72,15 +82,11 @@ int main ( int argc, char* argv[] ) {
     /* Save aliases */
 
     /* Restore original path */
-    setpath(orgPath);
-    printf(genenv("PATH"));
+    setPath(orgPath);
+    getPath();
     /* Exit */
     return status;
 }
 
-void setPath(path){
-    setenv("PATH", path,1);
-}
-void getPath(){
-    printf(genenv("PATH"));
-}
+
+
