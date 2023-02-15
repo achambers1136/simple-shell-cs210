@@ -4,15 +4,23 @@
 #include <string.h>
 #include "parser.h"
 #include "executor.h"
+#include <stdlib.h>
 
 int main ( int argc, char* argv[] ) {
 
     /* Shell Execution Outline */
-    /* Find the user home directory from the environment */
-
-    /* Set current working directory to user home directory */
-
     /* Save the current path */
+    char* orgPath = genenv("PATH");
+    /* Find the user home directory from the environment */
+    char* homeDirectory = genenv("HOME)");
+    /* Set current working directory to user home directory */
+    chdir(homeDirectory);
+    if (getcwd(homeDirectory, sizeof(homeDirectory)) != NULL){
+        printf("current working directory is %s\n", homeDirectory);
+    }    else{
+        printf("uh oh current working directory has not been set to home");
+    }
+    
 
     /* Load history */
 
@@ -64,7 +72,15 @@ int main ( int argc, char* argv[] ) {
     /* Save aliases */
 
     /* Restore original path */
-
+    setpath(orgPath);
+    printf(genenv("PATH"));
     /* Exit */
     return status;
+}
+
+void setPath(path){
+    setenv("PATH", path,1);
+}
+void getPath(){
+    printf(genenv("PATH"));
 }
