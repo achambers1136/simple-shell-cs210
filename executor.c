@@ -7,6 +7,17 @@
 #include <sys/wait.h>
 #include "parser.h"
 
+
+int setpath(int argc, char* argv[]){
+    setenv("PATH", argv[1],1);
+    return 0;
+}
+int getpath(){
+    printf(getenv("PATH"));
+    printf("\n");
+    return 0;
+}
+
 int shell_exec_ext(int argc, char* argv[]) {
     if (argc < 0) return 1;
     if (argc == 0) return 0;
@@ -59,6 +70,8 @@ int shell_exec(int argc, char* argv[]) {
 
     /* If command is built-in invoke appropriate function */
     if (strcmp(argv[0], "exit") == 0) return 70;
+    else if (strcmp(argv[0], "getpath") == 0) return getpath();
+    else if (strcmp(argv[0], "setpath") == 0) return setpath(argc, argv);
 
     /* Else execute command as an external process */
     else return shell_exec_ext(argc, argv);

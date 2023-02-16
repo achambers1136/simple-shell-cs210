@@ -7,22 +7,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void setPath(char* path){
-    setenv("PATH", path,1);
-}
-void getPath(){
-    printf(getenv("PATH"));
-    printf("\n");
-}
 
 int main ( int argc, char* argv[] ) {
 
     /* Shell Execution Outline */
     /* Save the current path */
-    char* orgPath = getenv("PATH");
-    getPath();
+    char* orgPath = strdup(getenv("PATH"));
     /* Find the user home directory from the environment */
-    char* homeDirectory = getenv("HOME)");
+    char* homeDirectory = getenv("HOME");
     /* Set current working directory to user home directory */
     int ch = chdir(homeDirectory);
     if (ch == 0){
@@ -31,7 +23,6 @@ int main ( int argc, char* argv[] ) {
         printf("uh oh current working directory has not been set to home ");
     }
     
-
     /* Load history */
 
     /* Load aliases */
@@ -59,14 +50,14 @@ int main ( int argc, char* argv[] ) {
         int cn = parseDelimiterArray(cmds, inp, ";");   // gets number of tokens within newly filled + tokenised 'cmds' array
 
         for (int i=0; i<cn; i++) {
-            //printf("[%d] %s\n", i, cmds[i]);//stage1 debug
+            printf("[%d] %s\n", i, cmds[i]);//stage1 debug
 
             char* tokens[50];   // stores tokenised command split by delimiters
             int tn = parseDelimiterArray(tokens, cmds[i], " \t\n|><&"); // get number of tokens within newly filled + tokenised 'tokens' array
 
-            /*for (int j=0; j<tn; j++) {
+            for (int j=0; j<tn; j++) {
                 printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 debug
-            }*/
+            }
             
             // Execute command
             status = shell_exec(tn, tokens);
@@ -82,11 +73,14 @@ int main ( int argc, char* argv[] ) {
     /* Save aliases */
 
     /* Restore original path */
-    setPath(orgPath);
-    getPath();
+    if (setenv("PATH", orgPath,1)==0){
+        printf(getenv("PATH"));
+        printf("\n");
+        }
+    
+    
     /* Exit */
     return status;
 }
-
 
 
