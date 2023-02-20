@@ -29,6 +29,9 @@ int main ( int argc, char* argv[] ) {
         char inp[512];
 
         /* Read and parse user input */
+
+        // Reading 
+
         if (fgets(inp, 512, stdin) == NULL) {
             printf("^D\n");
             status = 70; break; // break if CTRL+D
@@ -48,23 +51,18 @@ int main ( int argc, char* argv[] ) {
 
         inp[strcspn(inp, "\n")] = 0; // removes newline from end
 
-        char* cmds[50];                                 // stores commands split by ';'
-        int cn = parseDelimiterArray(cmds, inp, ";");   // gets number of tokens within newly filled + tokenised 'cmds' array
+        // Parsing
 
-        for (int i=0; i<cn; i++) {
-            //printf("[%d] %s\n", i, cmds[i]);//stage1 debug
+        char* tokens[50];   // stores tokenised command split by delimiters
+        int tn = parseDelimiterArray(tokens, inp, " \t\n|><&;"); // get number of tokens within newly filled + tokenised 'tokens' array
 
-            char* tokens[50];   // stores tokenised command split by delimiters
-            int tn = parseDelimiterArray(tokens, cmds[i], " \t\n|><&"); // get number of tokens within newly filled + tokenised 'tokens' array
-
-            /*for (int j=0; j<tn; j++) {
-                printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 debug
-            }*/
-            
-            // Execute command
-            status = shell_exec(tn, tokens);
-        }
-
+        /*for (int i=0; i<tn; i++) {
+            printf("[%d] %s\n", i, tokens[i]);//stage1 debug
+        }*/
+        
+        // Execute command
+        status = shell_exec(tn, tokens);
+        
         if (status == 70) break; // custom final exit code
     }
 
