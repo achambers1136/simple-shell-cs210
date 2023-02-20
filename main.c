@@ -4,6 +4,7 @@
 #include <string.h>
 #include "parser.h"
 #include "executor.h"
+#define MAX_INPUT_LENGTH 512
 
 int main ( int argc, char* argv[] ) {
 
@@ -26,13 +27,13 @@ int main ( int argc, char* argv[] ) {
     while(1) {
         /* Display prompt */
         if (!rejecting) printf("> ");
-        char inp[512];
+        char inp[MAX_INPUT_LENGTH];
 
         /* Read and parse user input */
 
         // Reading 
 
-        if (fgets(inp, 512, stdin) == NULL) {
+        if (fgets(inp, MAX_INPUT_LENGTH, stdin) == NULL) {
             printf("^D\n");
             status = 70; break; // break if CTRL+D
         }
@@ -41,11 +42,11 @@ int main ( int argc, char* argv[] ) {
         
         char* newline_ptr = strstr(inp, "\n");
         if (newline_ptr == NULL) {
-            rejecting = 1;                                                      // begins rejection if no newline (ie input > 512 chars)
+            rejecting = 1;              // begins rejection if no newline (ie input > MAX_INPUT_LENGTH chars)
             continue; 
         } else if (rejecting == 1) { 
-            rejecting = 0;                                                      // finish rejection if newline is present but still within rejection loop
-            fprintf(stderr, "ERROR: Input exceeds character limit (512).\n");
+            rejecting = 0;              // finish rejection if newline is present but still within rejection loop
+            fprintf(stderr, "ERROR: Input exceeds character limit (%d).\n", MAX_INPUT_LENGTH);
             continue;
         }
 
