@@ -76,6 +76,8 @@ int main ( int argc, char* argv[] ) {
     if (setenv("PATH", orgPath,1)==0){
         printf(getenv("PATH"));
         printf("\n");
+        }else{
+            printf("Original path has not been restored")
         }
     
     
