@@ -7,14 +7,18 @@
 #include <sys/wait.h>
 #include "parser.h"
 
-int setpath(int argc, char* argv[]){
-    setenv("PATH", argv[1],1);
+int getpath() {
+    printf(getenv("PATH"));
+    printf("\n\n");
     return 0;
 }
 
-int getpath(){
-    printf(getenv("PATH"));
-    printf("\n\n");
+int setpath(int argc, char* argv[]) {
+    if (argc <= 1) {
+        fprintf(stderr, "Syntax error.\n\tUsage: setpath [path]\n\n");
+        return 1;
+    }
+    setenv("PATH", argv[1],1);
     return 0;
 }
 

@@ -74,7 +74,7 @@ int main ( int argc, char* argv[] ) {
     /* Save aliases */
 
     /* Restore original path */
-    if (setenv("PATH", orgPath,1) != 0){
+    if (setenv("PATH", orgPath,1) != 0) {
         perror("ERROR: Original path was unable to be restored: ");
         return 1;
     }
