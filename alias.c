@@ -5,15 +5,15 @@
 char array[10][2];
 
 
-char check_alias(char* s){
-    for(int i =0; i< 10; i++){
-        if (array[i][0] == s){
-            return array[i][1];
+char check_alias(char* s[]){
+    for(int i = 0; i < sizeof(s); i++){
+        for(int x =0; x< 10; x++){
+            if (array[x][0] == s[i]){
+                return array[x][1]; //NEED TO RETURN ARRAY OF ANSWERS IN CASE THERE'S MULTIPLE IN s[] :);
+            }
         }
     }
-
-    return "NONE";
-
+    return ;
 }
 
 
@@ -55,7 +55,13 @@ char unalias(char* alias){
 void print_alias(){
     if(array[0][0] == NULL){
         printf("There are no aliases");
+        return;
     }
     for(int i = 0; i<10; i++){
+        if(array[i][0] != NULL){
+            printf("Alias: ", array[i][0]);
+            printf("Command: ", array[i][1]);
+        }
     }
+    return;
 }
