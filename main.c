@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "parser.h"
 #include "executor.h"
+#define MAX_INPUT_LENGTH 512
 
 int main ( int argc, char* argv[] ) {
 
@@ -30,40 +31,49 @@ int main ( int argc, char* argv[] ) {
 
     printf("$w4g$h311 initialised.\n\n");
     int status = 0;
+    int rejecting = 0; // bool to track if shell should loop until end of excessive input to reject all
 
     /* Do while shell has not terminated */
     while(1) {
         /* Display prompt */
-        printf("$%s> ", cwd);
-        char inp[512];
+        if (!rejecting) printf("$%s> ", cwd);
+        char inp[MAX_INPUT_LENGTH];
 
         /* Read and parse user input */
-        if (fgets(inp, 512, stdin) == NULL) {
+
+        // Reading 
+
+        if (fgets(inp, MAX_INPUT_LENGTH, stdin) == NULL) {
             printf("^D\n");
             status = 70; break; // break if CTRL+D
         }
         
         if (strcmp(inp, "\n") == 0) continue; // reprompts if empty line
         
-        inp[strcspn(inp, "\n")] = 0; // removes newline from end
-
-        char* cmds[50];                                 // stores commands split by ';'
-        int cn = parseDelimiterArray(cmds, inp, ";");   // gets number of tokens within newly filled + tokenised 'cmds' array
-
-        for (int i=0; i<cn; i++) {
-            //printf("[%d] %s\n", i, cmds[i]);//stage1 debug
-
-            char* tokens[50];   // stores tokenised command split by delimiters
-            int tn = parseDelimiterArray(tokens, cmds[i], " \t\n|><&"); // get number of tokens within newly filled + tokenised 'tokens' array
-
-            /*for (int j=0; j<tn; j++) {
-                printf("[%d][%d] %s\n", i, j, tokens[j]);//stage1 debug
-            }*/
-            
-            // Execute command
-            status = shell_exec(tn, tokens);
+        char* newline_ptr = strstr(inp, "\n");
+        if (newline_ptr == NULL) {
+            rejecting = 1;              // begins rejection if no newline (ie input > MAX_INPUT_LENGTH chars)
+            continue; 
+        } else if (rejecting == 1) { 
+            rejecting = 0;              // finish rejection if newline is present but still within rejection loop
+            fprintf(stderr, "ERROR: Input exceeds character limit (%d).\n", MAX_INPUT_LENGTH);
+            continue;
         }
 
+        inp[strcspn(inp, "\n")] = 0; // removes newline from end
+
+        // Parsing
+
+        char* tokens[50];   // stores tokenised command split by delimiters
+        int tn = parseDelimiterArray(tokens, inp, " \t\n|><&;"); // get number of tokens within newly filled + tokenised 'tokens' array
+
+        /*for (int i=0; i<tn; i++) {
+            printf("[%d] %s\n", i, tokens[i]);//stage1 debug
+        }*/
+        
+        // Execute command
+        status = shell_exec(tn, tokens);
+        
         if (status == 70) break; // custom final exit code
     }
 
