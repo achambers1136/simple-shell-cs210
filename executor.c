@@ -7,14 +7,33 @@
 #include <sys/wait.h>
 #include "parser.h"
 
-int setpath(int argc, char* argv[]){
+
+
+int getpath() {
+    printf(getenv("PATH"));
+    printf("\n\n");
+    return 0;
+}
+
+int setpath(int argc, char* argv[]) {
+    if (argc <= 1) {
+        fprintf(stderr, "Syntax error.\n\tUsage: setpath [path]\n\n");
+        return 1;
+    }
     setenv("PATH", argv[1],1);
     return 0;
 }
 
-int getpath(){
-    printf(getenv("PATH"));
-    printf("\n\n");
+int cd(int argc, char* argv[]) {
+    if (argc <= 1) {
+        chdir(getenv("HOME"));
+        return 0;
+    }
+    
+    if (chdir(argv[1]) != 0) {
+        perror("ERROR: Current working directory was not changed: ");
+        return 1;
+    }
     return 0;
 }
 
@@ -72,6 +91,7 @@ int shell_exec(int argc, char* argv[]) {
     if      (strcmp(argv[0], "exit") == 0)      return 70;
     else if (strcmp(argv[0], "getpath") == 0)   return getpath();
     else if (strcmp(argv[0], "setpath") == 0)   return setpath(argc, argv);
+    else if (strcmp(argv[0], "cd") == 0 )       return cd(argc, argv);
 
     /* Else execute command as an external process */
     else return shell_exec_ext(argc, argv);
