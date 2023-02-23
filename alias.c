@@ -1,19 +1,26 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 
-char array[10][2];
+char* array[11][2];
 
 
 char check_alias(char* s[]){
-    for(int i = 0; i < sizeof(s); i++){
+    bool changes = false;
+    for(int i = 0; s[i] != NULL; i++){
         for(int x =0; x< 10; x++){
             if (array[x][0] == s[i]){
-                return array[x][1]; //NEED TO RETURN ARRAY OF ANSWERS IN CASE THERE'S MULTIPLE IN s[] :);
+                s[i] = array[x][1];
+                changes = true;
             }
         }
     }
-    return ;
+    if(changes){
+        return 1;
+    }else{
+        return 0;
+    };
 }
 
 
@@ -22,11 +29,11 @@ char alias(char* alias, char* cmd){
         if(array[i][0] == NULL){
             array[i][0] = alias;
             array[i][1] = cmd;
-            return "Finisce";
+            return 1;
         }
         
     }
-    return "Too many aliases";
+    return 2; //return code 2 for trying to add an alias when aliases are full...
 }
 
 char unalias(char* alias){
@@ -39,16 +46,16 @@ char unalias(char* alias){
                         array[i][1] = array[x][1];
                         array[x][0] = NULL;
                         array[x][1] = NULL;
-                        return "Alias Removed";
+                        return 1;
                     }
                 }
-                array[i][0] == NULL;
-                array[i][1] == NULL;
-                return "Alias Removed";
+                array[i][0] = NULL;
+                array[i][1] = NULL;
+                return 1;
             }
         } 
     }
-    return "No such Alias exists";
+    return 2; //return code 2 when requested alias for deletion not present in array
 }
 
 
@@ -59,8 +66,8 @@ void print_alias(){
     }
     for(int i = 0; i<10; i++){
         if(array[i][0] != NULL){
-            printf("Alias: ", array[i][0]);
-            printf("Command: ", array[i][1]);
+            printf("Alias: %s", array[i][0]);
+            printf("Command: %s", array[i][1]);
         }
     }
     return;
