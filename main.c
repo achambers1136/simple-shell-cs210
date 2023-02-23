@@ -15,9 +15,8 @@ int main ( int argc, char* argv[] ) {
     char* homeDirectory = getenv("HOME");
     
     /* Set current working directory to user home directory */
-    char* cwd;
-    if (chdir(homeDirectory) == 0) cwd = homeDirectory;
-    else {
+    char cwd[512];
+    if (chdir(homeDirectory) != 0) {
         perror("ERROR: Working directory was unable to be set to home directory: ");
         return 1;
     }
@@ -35,8 +34,9 @@ int main ( int argc, char* argv[] ) {
 
     /* Do while shell has not terminated */
     while(1) {
+        getcwd(cwd,sizeof(cwd));
         /* Display prompt */
-        if (!rejecting) printf("$%s> ", cwd);
+        if (!rejecting) printf("$%s> ",cwd);
         char inp[MAX_INPUT_LENGTH];
 
         /* Read and parse user input */
