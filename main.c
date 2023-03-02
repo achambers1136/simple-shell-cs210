@@ -36,7 +36,7 @@ int main ( int argc, char* argv[] ) {
     while(1) {
         getcwd(cwd,sizeof(cwd));
         /* Display prompt */
-        if (!rejecting) printf("$%s> ",cwd);
+        if (!rejecting) printf("$%s> ", cwd);
         char inp[MAX_INPUT_LENGTH];
 
         /* Read and parse user input */
@@ -84,7 +84,7 @@ int main ( int argc, char* argv[] ) {
     /* Save aliases */
 
     /* Restore original path */
-    if (setenv("PATH", orgPath,1) != 0) {
+    if (setenv("PATH", orgPath, 1) != 0) {
         perror("ERROR: Original path was unable to be restored: ");
         return 1;
     }
