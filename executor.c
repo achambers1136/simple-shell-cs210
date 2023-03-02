@@ -10,7 +10,7 @@
 
 
 int getpath() {
-    printf(getenv("PATH"));
+    printf("%s", getenv("PATH"));
     printf("\n\n");
     return 0;
 }
