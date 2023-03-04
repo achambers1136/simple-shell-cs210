@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 #include "parser.h"
+#include "history.h"
 
 int setpath(int argc, char* argv[]){
     setenv("PATH", argv[1],1);
@@ -67,6 +68,11 @@ int shell_exec(int argc, char* argv[]) {
 
     /* While the command is a history invocation or alias then replace it with the 
         appropriate command from history or the aliased command respectively */
+    if (strcspn(argv[0], "!") == 0) {
+        //retrieveHistory();
+    }else {
+        addToHistory(argc, argv);
+    }
 
     /* If command is built-in invoke appropriate function */
     if      (strcmp(argv[0], "exit") == 0)      return 70;
