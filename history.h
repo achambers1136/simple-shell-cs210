@@ -1,3 +1,5 @@
-void printHistory();
-void sanitizeString(char* str);
-void addToHistory(int argc, char* argv[]);
+/* history.h */
+
+int printHistory();
+int addToHistory(int argc, char* argv[]);
+int retrieveHistory(int argc, char* argv[]);
