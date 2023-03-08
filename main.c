@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include "parser.h"
 #include "executor.h"
-#include "history.h"
 #define MAX_INPUT_LENGTH 512
 
 int main ( int argc, char* argv[] ) {
