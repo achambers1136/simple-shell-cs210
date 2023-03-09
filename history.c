@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "parser.h"
 #define MAX_HISTORY_SIZE 20
 #define MAX_TOKENS 50
 
@@ -12,10 +13,10 @@ int head = 0;
 int tail = -1; // initialise to empty history
 int size = 0;
 
-void printArr(char* arr[]) {
+void fprintArr(FILE* fptr, char* arr[]) {
   int t = 0;
   while (arr[t] != NULL) {
-    printf("%s ", arr[t]);
+    fprintf(fptr, "%s ", arr[t]);
     t++;
   }
 }
@@ -30,13 +31,13 @@ int printHistory() {
   int index = 1;
   while (h != tail) {
     printf("!%d: ", index);
-    printArr(history[h]);
+    fprintArr(stdout, history[h]);
     printf("\n");
     h = (h + 1) % MAX_HISTORY_SIZE;
     index++;
   }
   printf("!%d: ", index);
-  printArr(history[tail]);
+  fprintArr(stdout, history[tail]); // prints final line
   printf("\n\n");
   return 0; 
 }
@@ -114,4 +115,40 @@ int retrieveHistory(char* argv[]) {
     }
 
   }
+}
+
+int saveHistory() {
+  FILE* fptr = fopen(strcat(getenv("HOME"), "/.hist_list"), "w"); 
+
+  if (tail == -1) return 0; // empty history
+
+  int h = head;
+  while (h != tail) {
+    fprintArr(fptr, history[h]);
+    fprintf(fptr, "\n");
+    h = (h + 1) % MAX_HISTORY_SIZE;
+  }
+
+  fprintArr(fptr, history[tail]); // writes final line
+
+  fclose(fptr);
+  return 0;
+}
+
+int loadHistory() {
+  FILE* fptr = fopen(strcat(getenv("HOME"), "/.hist_list"), "r"); 
+  
+  if (fptr == NULL) return 1; // file does not exist
+  
+  char buffer[512]; // stores each line of file over loop
+  while(fgets(buffer, sizeof(buffer), fptr) != NULL) {
+    buffer[strcspn(buffer, "\n")] = 0; // removes newline from end
+    
+    char* argv[50];
+    int argc = parseDelimiterArray(argv, buffer, " ");
+    addToHistory(argc, argv);
+  }
+
+  fclose(fptr);
+  return 0;
 }
