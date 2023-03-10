@@ -118,7 +118,10 @@ int retrieveHistory(char* argv[]) {
 }
 
 int saveHistory() {
-  FILE* fptr = fopen(strcat(getenv("HOME"), "/.hist_list"), "w"); 
+  char path[512];
+  strcpy(path, getenv("HOME"));
+  strcat(path, "/.hist_list");
+  FILE* fptr = fopen(path, "w"); 
 
   if (tail == -1) return 0; // empty history
 
@@ -136,7 +139,10 @@ int saveHistory() {
 }
 
 int loadHistory() {
-  FILE* fptr = fopen(strcat(getenv("HOME"), "/.hist_list"), "r"); 
+  char path[512];
+  strcpy(path, getenv("HOME"));
+  strcat(path, "/.hist_list");
+  FILE* fptr = fopen(path, "r"); 
   
   if (fptr == NULL) return 1; // file does not exist
   
