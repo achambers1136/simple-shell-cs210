@@ -75,7 +75,8 @@ int addToHistory(int argc, char* argv[]) {
   }
 
   copyArr(argv, history[tail], argc);
-
+  return 0;
+  
 }
 
 // Sets argv to specified index and returns number of arguments in history invocation, or -1 if invalid
