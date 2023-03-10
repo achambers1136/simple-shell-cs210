@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "parser.h"
 #define MAX_HISTORY_SIZE 20
 #define MAX_TOKENS 50
 
@@ -11,14 +12,6 @@ char* history[MAX_HISTORY_SIZE][MAX_TOKENS]; // circular 2D array
 int head = 0;
 int tail = -1; // initialise to empty history
 int size = 0;
-
-void printArr(char* arr[]) {
-  int t = 0;
-  while (arr[t] != NULL) {
-    printf("%s ", arr[t]);
-    t++;
-  }
-}
 
 int printHistory() {
   if (tail == -1) {
@@ -30,32 +23,15 @@ int printHistory() {
   int index = 1;
   while (h != tail) {
     printf("!%d: ", index);
-    printArr(history[h]);
+    fprintArr(stdout, history[h]);
     printf("\n");
     h = (h + 1) % MAX_HISTORY_SIZE;
     index++;
   }
   printf("!%d: ", index);
-  printArr(history[tail]);
+  fprintArr(stdout, history[tail]); // prints final line
   printf("\n\n");
   return 0; 
-}
-
-void copyArr(char* source[], char* dest[], int count) {
-  // copy 'count' times +1 to include null terminator
-  for (int i=0; i <= count; i++) {
-    dest[i] = source[i];
-  }
-}
-
-int copyArrTilNull(char* source[], char* dest[]) {
-  int argc = 0;
-  while (source[argc] != NULL) {
-    dest[argc] = source[argc];
-    argc++;
-  }
-  dest[argc] = NULL;
-  return argc;
 }
 
 int addToHistory(int argc, char* argv[]) {
@@ -74,6 +50,7 @@ int addToHistory(int argc, char* argv[]) {
   }
 
   copyArr(argv, history[tail], argc);
+  return 0;
 
 }
 
@@ -114,4 +91,46 @@ int retrieveHistory(char* argv[]) {
     }
 
   }
+}
+
+int saveHistory() {
+  char path[512];
+  strcpy(path, getenv("HOME"));
+  strcat(path, "/.hist_list");
+  FILE* fptr = fopen(path, "w"); 
+
+  if (tail == -1) return 0; // empty history
+
+  int h = head;
+  while (h != tail) {
+    fprintArr(fptr, history[h]);
+    fprintf(fptr, "\n");
+    h = (h + 1) % MAX_HISTORY_SIZE;
+  }
+
+  fprintArr(fptr, history[tail]); // writes final line
+
+  fclose(fptr);
+  return 0;
+}
+
+int loadHistory() {
+  char path[512];
+  strcpy(path, getenv("HOME"));
+  strcat(path, "/.hist_list");
+  FILE* fptr = fopen(path, "r"); 
+  
+  if (fptr == NULL) return 1; // file does not exist
+  
+  char buffer[512]; // stores each line of file over loop
+  while(fgets(buffer, sizeof(buffer), fptr) != NULL) {
+    buffer[strcspn(buffer, "\n")] = 0; // removes newline from end
+    
+    char* argv[50];
+    int argc = parseDelimiterArray(argv, buffer, " ");
+    addToHistory(argc, argv);
+  }
+
+  fclose(fptr);
+  return 0;
 }
