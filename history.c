@@ -13,14 +13,6 @@ int head = 0;
 int tail = -1; // initialise to empty history
 int size = 0;
 
-void fprintArr(FILE* fptr, char* arr[]) {
-  int t = 0;
-  while (arr[t] != NULL) {
-    fprintf(fptr, "%s ", arr[t]);
-    t++;
-  }
-}
-
 int printHistory() {
   if (tail == -1) {
     printf("Nothing to show!\n\n");
@@ -42,23 +34,6 @@ int printHistory() {
   return 0; 
 }
 
-void copyArr(char* source[], char* dest[], int count) {
-  // copy 'count' times +1 to include null terminator
-  for (int i=0; i <= count; i++) {
-    dest[i] = source[i];
-  }
-}
-
-int copyArrTilNull(char* source[], char* dest[]) {
-  int argc = 0;
-  while (source[argc] != NULL) {
-    dest[argc] = source[argc];
-    argc++;
-  }
-  dest[argc] = NULL;
-  return argc;
-}
-
 int addToHistory(int argc, char* argv[]) {
 
   if (tail == -1) tail = 0; // init
@@ -76,7 +51,7 @@ int addToHistory(int argc, char* argv[]) {
 
   copyArr(argv, history[tail], argc);
   return 0;
-  
+
 }
 
 // Sets argv to specified index and returns number of arguments in history invocation, or -1 if invalid
