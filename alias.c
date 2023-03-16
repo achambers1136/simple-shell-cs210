@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include "parser.h"
+#define MAX_TOKENS 50
+#define MAX_ALIASES 10
 
-
-char* aliases[11][2];
+char* aliases[MAX_ALIASES];
+char* aliasValues[MAX_ALIASES][MAX_TOKENS];
 
 
 int check_alias(int args, char* cmd[]){
@@ -70,3 +73,9 @@ void print_alias(){
     return;
 }
 */
+
+int testAlias(char* argv[], int argc){
+    char* inp[] = {"alias", "ls", "ls -l"};
+
+    return spliceIntoArr(argv, argc, inp, 3, 1);
+}

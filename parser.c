@@ -54,3 +54,23 @@ void fprintArr(FILE* fptr, char* arr[]) {
     t++;
   }
 }
+
+int spliceIntoArr(char* arr[], int argc, char* inp[], int inpc, int index){
+  if (argc + (inpc - 1) > MAX_TOKENS) {
+    fprintf(stderr, "ERROR: Exceeded token limit (%d). Total number of commands/arguments cannot exceed this value.\n", MAX_TOKENS);
+    return -1;
+  }
+  
+  // shift elements to the right
+  /*
+  for (int i = (argc + (inpc - 1)) - 1; i >= index; i--) {
+    arr[i] = strdup(arr[i - (inpc - 1)]);
+  }
+  
+  for 
+
+  copyArr(inp, &arr[index], inpc);
+  
+  return argc + (inpc-1);
+  */
+}

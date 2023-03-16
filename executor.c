@@ -7,8 +7,7 @@
 #include <sys/wait.h>
 #include "parser.h"
 #include "history.h"
-
-
+#include "alias.h"
 
 int getpath() {
     printf("%s", getenv("PATH"));
@@ -84,6 +83,8 @@ int shell_exec_ext(int argc, char* argv[]) {
 int shell_exec(int argc, char* argv[]) {
     if (argc < 0) return 1; // err
     if (argc == 0) return 0;
+
+    argc = testAlias(argv, argc);
 
     /* While the command is a history invocation or alias then replace it with the 
         appropriate command from history or the aliased command respectively */
