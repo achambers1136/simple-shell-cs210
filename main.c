@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "parser.h"
 #include "executor.h"
+#include "history.h"
 #define MAX_INPUT_LENGTH 512
 
 int main ( int argc, char* argv[] ) {
@@ -25,7 +26,7 @@ int main ( int argc, char* argv[] ) {
     char* orgPath = strdup(getenv("PATH"));
     
     /* Load history */
-
+    loadHistory();
     /* Load aliases */
 
     printf("$w4g$h311 initialised.\n\n");
@@ -80,7 +81,7 @@ int main ( int argc, char* argv[] ) {
     /* End while */
     printf("Exiting $w4g$h311...\n");
     /* Save history */
-
+    saveHistory();
     /* Save aliases */
 
     /* Restore original path */
