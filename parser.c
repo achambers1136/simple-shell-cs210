@@ -25,12 +25,17 @@ int parseDelimiterArray(char* arr[], char* str, char* delims) {
     return n;
 }
 
-/*  Copies the contents of one array of strings to another.
-    Assumes count is the number of elements in the source array, and that they are followed by a null-terminator. */
-void copyArr(char* source[], char* dest[], int count) {
-  for (int i = 0; i <= count; i++) {
-    dest[i] = source[i];
+/*  Copies the contents of one array of strings to another (where c is the number of elements to copy). */
+void copyArr(char* source[], char* dest[], int c) {
+  for (int i = 0; i < c; i++) {
+    dest[i] = strdup(source[i]);
   }
+}
+
+/*  Copies the contents of one array of strings to another (where c is the number of elements to copy), and adds a null terminator. */
+void copyNTArr(char* source[], char* dest[], int c) {
+  copyArr(source, dest, c);
+  dest[c] = NULL;
 }
 
 /*  Copies the contents of one array of strings to another, until a null-terminator is reached.
@@ -38,7 +43,7 @@ void copyArr(char* source[], char* dest[], int count) {
 int copyArrTilNull(char* source[], char* dest[]) {
   int argc = 0;
   while (source[argc] != NULL) {
-    dest[argc] = source[argc];
+    dest[argc] = strdup(source[argc]);
     argc++;
   }
   dest[argc] = NULL;

@@ -2,7 +2,9 @@
 
 int parseDelimiterArray(char* arr[], char* str, char* delims);
 
-void copyArr(char* source[], char* dest[], int count);
+void copyArr(char* source[], char* dest[], int c);
+
+void copyNTArr(char* source[], char* dest[], int c);
 
 int copyArrTilNull(char* source[], char* dest[]);
 

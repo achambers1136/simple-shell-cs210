@@ -49,7 +49,7 @@ int addToHistory(int argc, char* argv[]) {
     size++;
   }
 
-  copyArr(argv, history[tail], argc);
+  copyNTArr(argv, history[tail], argc);
   return 0;
 
 }
