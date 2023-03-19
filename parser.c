@@ -1,5 +1,4 @@
 /* parser.c */
-
 #include <stdio.h>
 #include <string.h>
 #define MAX_TOKENS 50
@@ -54,7 +53,7 @@ int copyArrTilNull(char* source[], char* dest[]) {
 void fprintArr(FILE* fptr, char* arr[]) {
   int t = 0;
   while (arr[t] != NULL) {
-    if (t != 0) fprintf(fptr, " "); // don't print space before first element
+    if (t != 0) fprintf(fptr, " "); //don't print space before first element
     fprintf(fptr, "%s", arr[t]);
     t++;
   }
@@ -65,16 +64,11 @@ int spliceIntoArr(char* arr[], int argc, char* inp[], int inpc, int index){
     fprintf(stderr, "ERROR: Exceeded token limit (%d). Total number of commands/arguments cannot exceed this value.\n", MAX_TOKENS);
     return -1;
   }
-  
   // shift elements to the right
-  
   for (int i = (argc - 1); i > index; i--) {
     arr[i + (inpc-1)] = strdup(arr[i]);
   }
   arr[argc + (inpc-1)] = NULL;
-
   copyArr(inp, &arr[index], (inpc - 1));
-  
   return argc + (inpc-1);
-  
 }

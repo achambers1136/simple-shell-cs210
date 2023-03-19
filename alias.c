@@ -7,32 +7,65 @@
 
 char* aliases[MAX_ALIASES];
 char* aliasValues[MAX_ALIASES][MAX_TOKENS];
+int aliasHead = 0;
+int aliasTail = -1;
+int aliasSize = 0;
 
 
-int check_alias(int args, char* cmd[]){
-    bool changes = false;
-    for(int i = 0; i < args; i++){
-        for(int x =0; x< 10; x++){
-            if (strcmp(aliases[x][0], cmd[i]) == 0){
-                cmd[i] = aliases[x][1];
-                return 0;
+int check_alias(int argc, char* argv[]){
+    if(aliasTail == -1) return argc; // init
+    for(int i = 0; i < argc; i++){
+        int h = aliasHead;
+        while(h != aliasTail){
+            printf("checking alias %s\n", aliases[h]);
+            if (strcmp(aliases[h], argv[i]) == 0){
+                printf("alias found\n");
+                int count = 0;
+                for(;;){
+                    if(aliasValues[h][count] == NULL){
+                        break;
+                    }else{
+                        count++;
+                    }
+                }
+                argc = spliceIntoArr(argv, argc, aliasValues[h], count, i);
             }
+            h = (h + 1) % MAX_ALIASES;
+        }
+        if (strcmp(aliases[aliasTail], argv[i]) == 0){
+            int count = 0;
+            for(;;){
+                if(aliasValues[aliasTail][count] == NULL){
+                    break;
+                }else{
+                    count++;
+                }
+            }
+            printf("%d, %s, %d, %d", argc, aliasValues[aliasTail][0], count, i);
+            //argc = spliceIntoArr(argv, argc, aliasValues[aliasTail], count, i);
         }
     }
-    return 1;
+    return argc;
 }
 
 
-char alias(int args, char* cmd[]){
-    for(int i= 0; i < 10; i++){
-        if(aliases[i][0] == NULL){
-            aliases[i][0] = strdup(cmd[1]);
-            aliases[i][1] = strdup(cmd[2]);
-            return 1;
+int alias(int argc, char* argv[]) {
+    if (aliasTail == -1) aliasTail = 0; // init
+    else {
+        aliasTail = (aliasTail + 1) % MAX_ALIASES;
+        if (aliasTail == aliasHead) {
+            aliasHead = (aliasHead + 1) % MAX_ALIASES;
         }
-        
     }
-    return 2; //return code 2 for trying to add an alias when aliases are full...
+
+    if (aliasSize != MAX_ALIASES) {
+        aliasSize++;
+    }
+
+    aliases[aliasTail] = argv[1];
+    copyNTArr(&argv[2], aliasValues[aliasTail], argc-2);
+    fprintArr(stdout, aliases);
+    return 0;
 }
 
 /*
@@ -73,9 +106,3 @@ void print_alias(){
     return;
 }
 */
-
-int testAlias(char* argv[], int argc){
-    char* inp[] = {"alias", "ls", "ls -l"};
-
-    return spliceIntoArr(argv, argc, inp, 3, 1);
-}
