@@ -67,15 +67,14 @@ int spliceIntoArr(char* arr[], int argc, char* inp[], int inpc, int index){
   }
   
   // shift elements to the right
-  /*
-  for (int i = (argc + (inpc - 1)) - 1; i >= index; i--) {
-    arr[i] = strdup(arr[i - (inpc - 1)]);
-  }
   
-  for 
+  for (int i = (argc - 1); i > index; i--) {
+    arr[i + (inpc-1)] = strdup(arr[i]);
+  }
+  arr[argc + (inpc-1)] = NULL;
 
-  copyArr(inp, &arr[index], inpc);
+  copyArr(inp, &arr[index], (inpc - 1));
   
   return argc + (inpc-1);
-  */
+  
 }
