@@ -1,3 +1,5 @@
+/* alias.c */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -11,6 +13,24 @@ int aliasHead = 0;
 int aliasTail = -1;
 int aliasSize = 0;
 
+int printAlias() {
+  if (aliasTail == -1) {
+    printf("Nothing to show!\n\n");
+    return 0;
+  }
+
+  int h = aliasHead;
+  while (h != aliasTail) {
+    printf("%s: ", aliases[h]);
+    fprintArr(stdout, aliasValues[h]);
+    printf("\n");
+    h = (h + 1) % MAX_ALIASES;
+  }
+  printf("%s: ", aliases[aliasTail]);
+  fprintArr(stdout, aliasValues[aliasTail]); // prints final line
+  printf("\n\n");
+  return 0; 
+}
 
 int check_alias(int argc, char* argv[]){
     if(aliasTail == -1) return argc; // init
@@ -44,9 +64,20 @@ int check_alias(int argc, char* argv[]){
     return argc;
 }
 
-
+//accepts 0 arguments aliases
 int alias(int argc, char* argv[]) {
+    if(argc == 1){
+        return printAlias();
+    }
+    if(argc == 2){
+        printf("Alias requires at least two arguments. \n");
+        return 0;
+    }
     if (aliasTail == -1) aliasTail = 0; // init
+    else if(aliasSize == MAX_ALIASES){
+        printf("Aliases full. \n");
+        return 0;
+    }
     else {
         aliasTail = (aliasTail + 1) % MAX_ALIASES;
         if (aliasTail == aliasHead) {
@@ -60,6 +91,7 @@ int alias(int argc, char* argv[]) {
 
     aliases[aliasTail] = argv[1];
     copyNTArr(&argv[2], aliasValues[aliasTail], argc-2);
+    printf("Alias added. o7\n");
     return 0;
 }
 
@@ -73,7 +105,7 @@ int unalias(int argc, char* argv[]) {
             aliasSize--;
             aliasTail = (aliasTail - 1);
             if(aliasTail < 0 && aliasSize != 0) aliasTail = MAX_ALIASES - 1;
-            printf("Alias removed. \n");
+            printf("Alias removed. o7\n");
             return 0;
         }
         h = (h + 1) % MAX_ALIASES;
@@ -84,23 +116,9 @@ int unalias(int argc, char* argv[]) {
         aliasSize--;
         aliasTail = (aliasTail - 1);
         if(aliasTail < 0 && aliasSize != 0) aliasTail = MAX_ALIASES - 1;
-        printf("Alias removed. \n");
+        printf("Alias removed. o7\n");
         return 0;
     }
     printf("Alias not found. \n");
     return 1;
 }
-
-/*void print_alias(){
-    if(aliases[0][0] == NULL){
-        printf("There are no aliases");
-        return;
-    }
-    for(int i = 0; i<10; i++){
-        if(aliases[i][0] != NULL){
-            printf("Alias: %s", aliases[i][0]);
-            printf("Command: %s", aliases[i][1]);
-        }
-    }
-    return;
-}*/
