@@ -7,6 +7,7 @@
 #include "parser.h"
 #include "executor.h"
 #include "history.h"
+#include "alias.h"
 #define MAX_INPUT_LENGTH 512
 
 int main ( int argc, char* argv[] ) {
@@ -28,7 +29,7 @@ int main ( int argc, char* argv[] ) {
     /* Load history */
     loadHistory();
     /* Load aliases */
-
+    loadAliases();
     printf("$w4g$h311 initialised.\n\n");
     int status = 0;
     int rejecting = 0; // bool to track if shell should loop until end of excessive input to reject all
@@ -83,7 +84,7 @@ int main ( int argc, char* argv[] ) {
     /* Save history */
     saveHistory();
     /* Save aliases */
-
+    saveAliases();
     /* Restore original path */
     if (setenv("PATH", orgPath, 1) != 0) {
         perror("ERROR: Original path was unable to be restored: ");

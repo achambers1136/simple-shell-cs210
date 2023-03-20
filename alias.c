@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "parser.h"
 #define MAX_TOKENS 50
 #define MAX_ALIASES 10
@@ -121,4 +122,51 @@ int unalias(int argc, char* argv[]) {
     }
     printf("Alias not found. \n");
     return 1;
+}
+
+
+
+
+int saveAliases(){
+    char path[512];
+    strcpy(path, getenv("HOME"));
+    strcat(path, "/.aliases");
+    FILE* fptr = fopen(path, "w"); 
+
+    if (aliasTail == -1) return 0; // No aliases.
+
+    int h = aliasHead;
+    while (h != aliasTail) {
+        fprintf(fptr, "alias %s ", aliases[h]);
+        fprintArr(fptr, aliasValues[h]);
+        fprintf(fptr, "\n");
+        h = (h + 1) % MAX_ALIASES;
+    }
+
+    fprintf(fptr, "alias %s ", aliases[aliasTail]);
+    fprintArr(fptr, aliasValues[aliasTail]); // writes final line
+
+    fclose(fptr);
+    return 0;
+}
+
+int loadAliases(){
+    char path[512];
+    strcpy(path, getenv("HOME"));
+    strcat(path, "/.aliases");
+    FILE* fptr = fopen(path, "r"); 
+
+    if (fptr == NULL) return 1; // file does not exist
+
+    char buffer[512]; // stores each line of file over loop
+    while(fgets(buffer, sizeof(buffer), fptr) != NULL) {
+        buffer[strcspn(buffer, "\n")] = 0; // removes newline from end
+
+        char* argv[50];
+        int argc = parseDelimiterArray(argv, buffer, " ");
+        alias(argc, argv);
+    }
+
+    fclose(fptr);
+    return 0;   
 }
