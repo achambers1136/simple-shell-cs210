@@ -11,3 +11,5 @@ int copyArrTilNull(char* source[], char* dest[]);
 int spliceIntoArr(char* arr[], int argc, char* inp[], int inpc, int index);
 
 void fprintArr(FILE* fptr, char* arr[]);
+
+int arrLength(char* arr[]);

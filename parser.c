@@ -69,6 +69,14 @@ int spliceIntoArr(char* arr[], int argc, char* inp[], int inpc, int index){
     arr[i + (inpc-1)] = strdup(arr[i]);
   }
   arr[argc + (inpc-1)] = NULL;
-  copyArr(inp, &arr[index], (inpc - 1));
+  copyArr(inp, &arr[index], inpc);
   return argc + (inpc-1);
+}
+
+int arrLength(char* arr[]){
+  int i = 0;
+  while(arr[i] != NULL){
+    i++;
+  }
+  return i;
 }
