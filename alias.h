@@ -1,4 +1,3 @@
-int check_alias(int args, char* cmd[]);
-char alias(int args, char* cmd[]);
-//char unalias(char* alias);
-//void print_alias();
+int check_alias(int argc, char* argv[]);
+char alias(int argc, char* argv[]);
+int unalias(int argc, char* argv[]);
