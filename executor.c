@@ -84,7 +84,8 @@ int shell_exec(int argc, char* argv[]) {
     if (argc < 0) return 1; // err
     if (argc == 0) return 0;
 
-    if (strcmp(argv[0], "unalias") == 0)        return unalias(argc, argv);
+    if (strcmp(argv[0], "alias") == 0)          return alias(argc, argv);
+    else if (strcmp(argv[0], "unalias") == 0)   return unalias(argc, argv);
     argc = check_alias(argc, argv);
 
     /* While the command is a history invocation or alias then replace it with the 
@@ -101,6 +102,7 @@ int shell_exec(int argc, char* argv[]) {
     else if (strcmp(argv[0], "setpath") == 0)   return setpath(argc, argv);
     else if (strcmp(argv[0], "cd") == 0)        return cd(argc, argv);
     else if (strcmp(argv[0], "alias") == 0)     return alias(argc, argv);
+    else if (strcmp(argv[0], "unalias") == 0)   return unalias(argc, argv);
 
     /* Else execute command as an external process */
     else return shell_exec_ext(argc, argv);
