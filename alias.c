@@ -47,6 +47,7 @@ int check_alias(int argc, char* argv[]){
                 }else{
                     argc = spliceIntoArr(argv, argc, aliasValues[h], count, i);
                 }
+                return check_alias(argc, argv);
             }
             h = (h + 1) % MAX_ALIASES;
         }
@@ -60,6 +61,7 @@ int check_alias(int argc, char* argv[]){
             }else{
                 argc = spliceIntoArr(argv, argc, aliasValues[aliasTail], count, i);
             }
+            return check_alias(argc, argv);
         }
     }
     return argc;
