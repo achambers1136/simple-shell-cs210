@@ -94,31 +94,34 @@ int unalias(int argc, char* argv[]) {
 }
 
 int alias(int argc, char* argv[]) {
-    if(argc == 1){
-        return printAlias();
-    }
-    if(argc == 2){
+    if(argc == 1) return printAlias();
+    else if (argc == 2) {
         printf("Alias requires at least two arguments. \n");
         return 0;
     }
+
     if(aliasSize > 0) {
+        int cont = 0; // flag to continue aliasing
         int h = aliasHead;
         while(h != aliasTail){
             if (strcmp(aliases[h], argv[1]) == 0){
                 printf("Alias already exists. Overriding... x \n");
                 unalias(argc, argv);
-                alias(argc, argv);
-                return 0;
+                cont = 1;
+                break;
             }
             h = (h + 1) % MAX_ALIASES;
         }
-        if (strcmp(aliases[aliasTail], argv[1]) == 0){
+
+        if (cont != 1) {
+            if (strcmp(aliases[aliasTail], argv[1]) == 0){
                 printf("Alias already exists. Overriding... x \n");
                 unalias(argc, argv);
-                alias(argc, argv);
-                return 0;
+            }
         }
+        
     }
+
     if (aliasTail == -1) aliasTail = 0; // init
     else if(aliasSize == MAX_ALIASES){
         printf("Aliases full. \n");
