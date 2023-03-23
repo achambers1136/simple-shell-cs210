@@ -9,7 +9,7 @@
 #define MAX_ALIASES 10
 
 char* aliases[MAX_ALIASES];
-char* aliasValues[MAX_ALIASES][MAX_TOKENS];
+char* aliasValues[MAX_ALIASES][MAX_TOKENS + 1];
 int aliasHead = 0;
 int aliasTail = -1;
 int aliasSize = 0;

@@ -8,7 +8,7 @@
 #define MAX_HISTORY_SIZE 20
 #define MAX_TOKENS 50
 
-char* history[MAX_HISTORY_SIZE][MAX_TOKENS]; // circular 2D array
+char* history[MAX_HISTORY_SIZE][MAX_TOKENS + 1]; // circular 2D array
 int head = 0;
 int tail = -1; // initialise to empty history
 int size = 0;
