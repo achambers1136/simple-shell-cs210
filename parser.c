@@ -10,7 +10,7 @@ int parseDelimiterArray(char* arr[], char* str, char* delims) {
     int n = 0;
 
     while ((split = strtok_r(str, delims, &str))) {
-        if (n == MAX_TOKENS + 1) {
+        if (n == MAX_TOKENS) {
             fprintf(stderr, "ERROR: Exceeded token limit (%d). Total number of commands/arguments cannot exceed this value.\n", MAX_TOKENS);
             arr[MAX_TOKENS] = NULL;
             return -1;
@@ -60,7 +60,7 @@ void fprintArr(FILE* fptr, char* arr[]) {
 }
 
 int spliceIntoArr(char* arr[], int argc, char* inp[], int inpc, int index){
-  if (argc + (inpc - 1) > MAX_TOKENS + 1) {
+  if (argc + (inpc - 1) > MAX_TOKENS) {
     fprintf(stderr, "ERROR: Exceeded token limit (%d). Total number of commands/arguments cannot exceed this value.\n", MAX_TOKENS);
     return -1;
   }

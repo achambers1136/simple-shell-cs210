@@ -126,7 +126,7 @@ int loadHistory() {
   while(fgets(buffer, sizeof(buffer), fptr) != NULL) {
     buffer[strcspn(buffer, "\n")] = 0; // removes newline from end
     
-    char* argv[50];
+    char* argv[MAX_TOKENS + 1];
     int argc = parseDelimiterArray(argv, buffer, " ");
     addToHistory(argc, argv);
   }
