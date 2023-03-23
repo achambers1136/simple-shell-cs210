@@ -5,11 +5,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "parser.h"
-#define MAX_TOKENS 50
+
 #define MAX_ALIASES 10
 
 char* aliases[MAX_ALIASES];
-char* aliasValues[MAX_ALIASES][MAX_TOKENS + 1];
+char* aliasValues[MAX_ALIASES][MAX_TOKEN_ARR];
 int aliasHead = 0;
 int aliasTail = -1;
 int aliasSize = 0;

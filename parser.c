@@ -1,7 +1,9 @@
 /* parser.c */
 #include <stdio.h>
 #include <string.h>
+
 #define MAX_TOKENS 50
+#define MAX_TOKEN_ARR MAX_TOKENS + 1
 
 /*  Parses a string into an array of strings, using the specified delimiters.
     Returns the number of tokens parsed, or -1 if the number of tokens exceeds the maximum. */

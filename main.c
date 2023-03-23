@@ -9,7 +9,6 @@
 #include "history.h"
 #include "alias.h"
 #define MAX_INPUT_LENGTH 512
-#define MAX_TOKENS 50
 
 int main ( int argc, char* argv[] ) {
 
