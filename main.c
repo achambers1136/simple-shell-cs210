@@ -66,7 +66,7 @@ int main ( int argc, char* argv[] ) {
 
         // Parsing
 
-        char* tokens[50];   // stores tokenised command split by delimiters
+        char* tokens[MAX_TOKENS + 1];   // stores tokenised command split by delimiters
         int tn = parseDelimiterArray(tokens, inp, " \t\n|><&;"); // get number of tokens within newly filled + tokenised 'tokens' array
 
         /*for (int i=0; i<tn; i++) {

@@ -5,11 +5,11 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include "parser.h"
-#define MAX_TOKENS 50
+
 #define MAX_ALIASES 10
 
 char* aliases[MAX_ALIASES];
-char* aliasValues[MAX_ALIASES][MAX_TOKENS];
+char* aliasValues[MAX_ALIASES][MAX_TOKEN_ARR];
 int aliasHead = 0;
 int aliasTail = -1;
 int aliasSize = 0;
@@ -181,7 +181,7 @@ int loadAliases(){
     while(fgets(buffer, sizeof(buffer), fptr) != NULL) {
         buffer[strcspn(buffer, "\n")] = 0; // removes newline from end
 
-        char* argv[50];
+        char* argv[MAX_TOKENS + 1];
         int argc = parseDelimiterArray(argv, buffer, " ");
         alias(argc, argv);
     }
