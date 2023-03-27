@@ -77,7 +77,7 @@ int check_alias(char* token, char* argvOut[], int index, List alias_chain){
 int parseAliases(int argc, char* argv[]) {
     if(aliasTail == -1) return argc;
     int newArrLen = 0;
-    char* newArr[MAX_TOKENS + 1];
+    char* newArr[MAX_TOKEN_ARR];
 
     for (int i = 0; i < argc; i++){
         newArrLen += check_alias(argv[i], newArr, newArrLen, new_list());
@@ -230,7 +230,7 @@ int loadAliases(){
     while(fgets(buffer, sizeof(buffer), fptr) != NULL) {
         buffer[strcspn(buffer, "\n")] = 0; // removes newline from end
 
-        char* argv[MAX_TOKENS + 1];
+        char* argv[MAX_TOKEN_ARR];
         int argc = parseDelimiterArray(argv, buffer, " ");
         add_alias(argv[1], &argv[2], argc - 2);
     }
