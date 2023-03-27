@@ -123,6 +123,11 @@ int unalias(int argc, char* argv[]) {
         return 0;
     }
 
+    if (argc != 2) {
+        printf("ERROR: Please specify the alias to remove.\n\n");
+        return 1;
+    }
+
     int h = aliasHead;
     for (;;) {
 
@@ -161,7 +166,7 @@ void add_alias(char* alias, char* value[], int valc) {
 int alias(int argc, char* argv[]) {
     if(argc == 1) return printAlias();
     else if (argc == 2) {
-        printf("Alias requires at least two arguments. \n");
+        printf("ERROR: Alias requires at least two arguments.\n");
         return 0;
     }
 
