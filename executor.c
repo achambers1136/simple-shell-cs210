@@ -93,7 +93,10 @@ int shell_exec(int argc, char* argv[]) {
 
     /* While the command is a history invocation or alias then replace it with the 
         appropriate command from history or the aliased command respectively */
-    if      (strcspn(argv[0], "!") == 0)        argc = retrieveHistory(argv);
+    if (strcspn(argv[0], "!") == 0) {
+        argc = retrieveHistory(argv);
+        argc = parseAliases(argc, argv);
+    }
     else if (strcmp(argv[0], "history") == 0)   return printHistory();
     else addToHistory(argc, argv);
 
