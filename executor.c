@@ -84,10 +84,10 @@ int shell_exec(int argc, char* argv[]) {
     if (argc < 0) return 1; // err
     if (argc == 0) return 0;
      
-    if(strcmp(argv[0], "alias") == 0)           return alias(argc, argv);
-    else if (strcmp(argv[0], "unalias") == 0)   return unalias(argc, argv);
+    if (argc > 1) { if (strcmp(argv[0], "alias") == 0)      return alias(argc, argv); } // special case, still need to add alias to history if no args
+    else if (strcmp(argv[0], "unalias") == 0)               return unalias(argc, argv);
     
-    argc = parseAliases(argc, argv);
+    argc = parseAliases(argc, argv); // replace aliases with their values
     
     if (argc < 0) return 1;
 
@@ -95,7 +95,7 @@ int shell_exec(int argc, char* argv[]) {
         appropriate command from history or the aliased command respectively */
     if (strcspn(argv[0], "!") == 0) {
         argc = retrieveHistory(argv);
-        argc = parseAliases(argc, argv);
+        argc = parseAliases(argc, argv); // in case new alias added since addition to history
     }
     else if (strcmp(argv[0], "history") == 0)   return printHistory();
     else addToHistory(argc, argv);
