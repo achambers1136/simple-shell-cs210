@@ -14,7 +14,6 @@ char* aliasValues[MAX_ALIASES][MAX_TOKEN_ARR];
 int aliasHead = 0;
 int aliasTail = -1;
 int aliasSize = 0;
-List aliasList;
 
 int printAlias() {
   if (aliasTail == -1) {
@@ -35,40 +34,58 @@ int printAlias() {
   return 0; 
 }
 
+int check_alias(char* token, char* argvOut[], int index, List alias_chain){
+    int curLen = 1;
+    //check all but tail
+    int h = aliasHead;
+    for(;;) {
+
+        if (strcmp(aliases[h], token) == 0){
+            if (contains(alias_chain, token)){
+                printf("ERROR: Alias loop detected.\n\n");
+                return -1;
+            }
+
+            push(alias_chain, token); // add to chain
+
+            int count = arrLength(aliasValues[h]);
+            copyNTArr(aliasValues[h], &argvOut[index], count);
+            
+            curLen += count - 1;
+
+            for (int i = 0; i < count; i++){
+                int c = check_alias(aliasValues[h][i], argvOut, index + i, copy_list(alias_chain));
+                if (c == -1) return -1; // err
+                index += c;
+                curLen += c - 1;
+            }
+
+            break;
+        } else {
+            argvOut[index] = strdup(token);
+        }
+
+        if (h == aliasTail) break; // break if tail
+        h = (h + 1) % MAX_ALIASES;
+    }
+
+    clear(alias_chain);
+    free(alias_chain);
+    return curLen;
+}
+
 int parseAliases(int argc, char* argv[]) {
     if(aliasTail == -1) return argc;
     int newArrLen = 0;
     char* newArr[MAX_TOKENS + 1];
 
-    for(int i = 0; i < argc; i++){
-        argc += check_alias(argv[i], newArr, newArrLen);
-    }
-}
-
-int check_alias(char* token, char* argvOut[], int index){
-    //check all but tail
-    int h = aliasHead;
-    while(h != aliasTail){
-        if (strcmp(aliases[h], token) == 0){
-            int count = arrLength(aliasValues[h]);
-            copyNTArr(aliasValues[h], &argvOut[index], count);
-            token = argvOut[index];
-            for(int i = 0; i < count; i++){
-                return check_alias(token, argvOut, index);
-            }
-        }
-        h = (h + 1) % MAX_ALIASES;
+    for (int i = 0; i < argc; i++){
+        newArrLen += check_alias(argv[i], newArr, newArrLen, new_list());
+        if (newArrLen == -1) return -1; // err
     }
 
-    //check tail
-    if (strcmp(aliases[aliasTail], token) == 0){
-        int count = arrLength(aliasValues[aliasTail]);
-        index = count;
-        copyNTArr(aliasValues[aliasTail], &argvOut[index], count);
-        token = argvOut[index];
-        return check_alias(token, argvOut, index);
-    }
-    return index;
+    copyNTArr(newArr, argv, newArrLen);
+    return newArrLen;
 }
 
 int unalias(int argc, char* argv[]) {
@@ -146,7 +163,6 @@ int alias(int argc, char* argv[]) {
     aliases[aliasTail] = argv[1];
     copyNTArr(&argv[2], aliasValues[aliasTail], argc-2);
     printf("Alias added. o7\n");
-    add(aliasList, argv[1]);
     return 0;
 }
 
@@ -177,8 +193,7 @@ int loadAliases(){
     char path[512];
     strcpy(path, getenv("HOME"));
     strcat(path, "/.aliases");
-    FILE* fptr = fopen(path, "r"); 
-    aliasList = newList();
+    FILE* fptr = fopen(path, "r");
     if (fptr == NULL) return 1; // file does not exist
 
     char buffer[512]; // stores each line of file over loop

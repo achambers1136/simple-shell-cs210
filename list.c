@@ -115,7 +115,7 @@ int is_empty(List list){
   return 1;
 }
 
-int size(List list){
+int list_size(List list){
   int count = 0;
   Node *curr = *list;
   while(curr != NULL){
@@ -280,7 +280,7 @@ List sublist(List list, int start, int end){
     return NULL;
   }
   
-  if(end < start || start < 0 || end > size(list)){
+  if(end < start || start < 0 || end > list_size(list)){
     return NULL;
   }
   

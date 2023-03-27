@@ -87,7 +87,9 @@ int shell_exec(int argc, char* argv[]) {
     if(strcmp(argv[0], "alias") == 0)           return alias(argc, argv);
     else if (strcmp(argv[0], "unalias") == 0)   return unalias(argc, argv);
     
-    argc = check_alias(argc, argv);
+    argc = parseAliases(argc, argv);
+    
+    if (argc < 0) return 1;
 
     /* While the command is a history invocation or alias then replace it with the 
         appropriate command from history or the aliased command respectively */

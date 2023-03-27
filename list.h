@@ -23,7 +23,7 @@ char* rem(List list);
 
 int is_empty(List list);
 
-int size(List list);
+int list_size(List list);
 
 void clear(List list);
 
