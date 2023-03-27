@@ -88,32 +88,74 @@ int parseAliases(int argc, char* argv[]) {
     return newArrLen;
 }
 
-int unalias(int argc, char* argv[]) {
-    if (aliasTail == -1) return 0; // init
-    int h = aliasHead;
-    while(h != aliasTail){
-        if (strcmp(aliases[h], argv[1]) == 0){
-            aliases[h] = NULL;
-            aliasValues[h][0] = NULL;
-            aliasSize--;
-            aliasTail = (aliasTail - 1);
-            if(aliasTail < 0 && aliasSize != 0) aliasTail = MAX_ALIASES - 1;
-            printf("Alias removed. o7\n");
-            return 0;
+void remove_alias(int index) {
+    free(aliases[index]);
+    aliases[index] = NULL;
+    // TODO: create free array function
+    aliasValues[index][0] = NULL;
+    aliasSize--;
+
+    if (aliasSize == 0) {
+        aliasHead = 0;
+        aliasTail = -1;
+    } else {
+
+        // shift remaining aliases to the left
+        while (index != aliasTail) {
+            aliases[index] = strdup(aliases[(index + 1) % MAX_ALIASES]);
+            copyNTArr(aliasValues[(index + 1) % MAX_ALIASES], aliasValues[index], arrLength(aliasValues[(index + 1) % MAX_ALIASES]));
+            index = (index + 1) % MAX_ALIASES;
         }
-        h = (h + 1) % MAX_ALIASES;
-    }
-    if (strcmp(aliases[aliasTail], argv[1]) == 0){
+
+        free(aliases[aliasTail]);
         aliases[aliasTail] = NULL;
-        aliasValues[aliasTail][0] = NULL;
-        aliasSize--;
-        aliasTail = (aliasTail - 1);
-        if(aliasTail < 0 && aliasSize != 0) aliasTail = MAX_ALIASES - 1;
-        printf("Alias removed. o7\n");
+        // TODO: create free array function
+
+        aliasTail--;
+        if (aliasTail == -1) aliasTail = MAX_ALIASES - 1;
+
+    }
+}
+
+int unalias(int argc, char* argv[]) {
+    if (aliasTail == -1) {
+        printf("Nothing to unalias!\n\n");
         return 0;
     }
-    printf("Alias not found. \n");
+
+    int h = aliasHead;
+    for (;;) {
+
+        if (strcmp(aliases[h], argv[1]) == 0){
+            remove_alias(h);
+            printf("Alias removed!\n\n");
+            return 0;
+        }
+
+        if (h == aliasTail) break; // break if tail
+        h = (h + 1) % MAX_ALIASES;
+    }
+
+    printf("Alias not found.\n\n");
     return 1;
+}
+
+void add_alias(char* alias, char* value[], int valc) {
+    if (aliasTail == -1) aliasTail = 0; // init
+    else { 
+        // update head/tail
+        aliasTail = (aliasTail + 1) % MAX_ALIASES;
+        if (aliasTail == aliasHead) {
+            aliasHead = (aliasHead + 1) % MAX_ALIASES;
+        }
+    }
+
+    if (aliasSize != MAX_ALIASES) {
+        aliasSize++;
+    }
+
+    aliases[aliasTail] = strdup(alias);
+    copyNTArr(value, aliasValues[aliasTail], valc);
 }
 
 int alias(int argc, char* argv[]) {
@@ -123,46 +165,29 @@ int alias(int argc, char* argv[]) {
         return 0;
     }
 
+    // check if alias already exists
     if(aliasSize > 0) {
-        int cont = 0; // flag to continue aliasing
         int h = aliasHead;
-        while(h != aliasTail){
+        for (;;) {
+
             if (strcmp(aliases[h], argv[1]) == 0){
-                printf("Alias already exists. Overriding... x \n");
-                unalias(argc, argv);
-                cont = 1;
+                printf("Alias already exists. Overriding...\n");
+                remove_alias(h);
                 break;
             }
+
+            if (h == aliasTail) break; // break if tail
             h = (h + 1) % MAX_ALIASES;
         }
-
-        if (cont != 1) {
-            if (strcmp(aliases[aliasTail], argv[1]) == 0){
-                printf("Alias already exists. Overriding... x \n");
-                unalias(argc, argv);
-            }
-        }
     }
 
-    if (aliasTail == -1) aliasTail = 0; // init
-    else if(aliasSize == MAX_ALIASES){
-        printf("Aliases full. \n");
+    if(aliasSize == MAX_ALIASES){
+        printf("Aliases full!\n\n");
         return 0;
     }
-    else { 
-        aliasTail = (aliasTail + 1) % MAX_ALIASES;
-        if (aliasTail == aliasHead) {
-            aliasHead = (aliasHead + 1) % MAX_ALIASES;
-        }
-    }
-    
-    if (aliasSize != MAX_ALIASES) {
-        aliasSize++;
-    }
 
-    aliases[aliasTail] = argv[1];
-    copyNTArr(&argv[2], aliasValues[aliasTail], argc-2);
-    printf("Alias added. o7\n");
+    add_alias(argv[1], &argv[2], argc - 2);
+    printf("Added alias '%s'!\n\n", aliases[aliasTail]);
     return 0;
 }
 
@@ -202,7 +227,7 @@ int loadAliases(){
 
         char* argv[MAX_TOKENS + 1];
         int argc = parseDelimiterArray(argv, buffer, " ");
-        alias(argc, argv);
+        add_alias(argv[1], &argv[2], argc - 2);
     }
 
     fclose(fptr);

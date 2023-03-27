@@ -8,6 +8,8 @@ int parseAliases(int argc, char* argv[]);
 
 int unalias(int argc, char* argv[]);
 
+int add_alias(char* alias, char* value[], int valc);
+
 char alias(int argc, char* argv[]);
 
 int saveAliases();
