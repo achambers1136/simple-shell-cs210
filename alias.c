@@ -38,9 +38,12 @@ int check_alias(char* token, char* argvOut[], int index, List alias_chain){
     int curLen = 1;
     //check all but tail
     int h = aliasHead;
+    int rep = 0; // if alias match is found
     for(;;) {
 
         if (strcmp(aliases[h], token) == 0){
+            rep = 1;
+
             if (contains(alias_chain, token)){
                 printf("ERROR: Alias loop detected.\n\n");
                 return -1;
@@ -49,6 +52,13 @@ int check_alias(char* token, char* argvOut[], int index, List alias_chain){
             push(alias_chain, token); // add to chain
 
             int count = arrLength(aliasValues[h]);
+
+            if (index + (count-1) >= MAX_TOKEN_ARR) {
+                fprintf(stderr, "ERROR: Unaliased command has exceeded token limit (%d). Total number of commands/arguments cannot exceed this value.\n\n", MAX_TOKENS);
+                curLen = -1;
+                break;
+            }
+
             copyNTArr(aliasValues[h], &argvOut[index], count);
             
             curLen += count - 1;
@@ -56,17 +66,24 @@ int check_alias(char* token, char* argvOut[], int index, List alias_chain){
             for (int i = 0; i < count; i++){
                 int c = check_alias(aliasValues[h][i], argvOut, index + i, copy_list(alias_chain));
                 if (c == -1) return -1; // err
-                index += c;
+                index += c - 1;
                 curLen += c - 1;
             }
 
             break;
-        } else {
-            argvOut[index] = strdup(token);
         }
 
         if (h == aliasTail) break; // break if tail
         h = (h + 1) % MAX_ALIASES;
+    }
+
+    if (!rep) {
+        if (index >= MAX_TOKENS) {
+            fprintf(stderr, "ERROR: Unaliased command has exceeded token limit (%d). Total number of commands/arguments cannot exceed this value.\n\n", MAX_TOKENS);
+            curLen = -1;
+        } else {
+            argvOut[index] = strdup(token); 
+        }        
     }
 
     clear(alias_chain);
@@ -80,8 +97,9 @@ int parseAliases(int argc, char* argv[]) {
     char* newArr[MAX_TOKEN_ARR];
 
     for (int i = 0; i < argc; i++){
-        newArrLen += check_alias(argv[i], newArr, newArrLen, new_list());
-        if (newArrLen == -1) return -1; // err
+        int c = check_alias(argv[i], newArr, newArrLen, new_list());
+        if (c == -1) return -1; // err
+        newArrLen += c;
     }
 
     freeNTArr(argv); // free old argv
