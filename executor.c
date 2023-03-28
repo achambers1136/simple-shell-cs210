@@ -97,9 +97,10 @@ int shell_exec(int argc, char* argv[]) {
         argc = retrieveHistory(argv);
         if (argc < 0) return 1;
         argc = parseAliases(argc, argv); // in case new alias added since addition to history
+    } else {
+        addToHistory(argc, argv);
+        if (strcmp(argv[0], "history") == 0)   return printHistory();
     }
-    else if (strcmp(argv[0], "history") == 0)   return printHistory();
-    else addToHistory(argc, argv);
 
     /* If command is built-in invoke appropriate function */
     if      (strcmp(argv[0], "exit") == 0)      return 70;
