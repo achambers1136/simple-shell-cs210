@@ -21,6 +21,7 @@ int setpath(int argc, char* argv[]) {
         return 1;
     }
     setenv("PATH", argv[1], 1);
+    printf("PATH set successfully!\n\n", getenv("PATH"));
     return 0;
 }
 
