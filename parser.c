@@ -1,5 +1,6 @@
 /* parser.c */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define MAX_TOKENS 50
@@ -61,24 +62,20 @@ void fprintArr(FILE* fptr, char* arr[]) {
   }
 }
 
-int spliceIntoArr(char* arr[], int argc, char* inp[], int inpc, int index){
-  if (argc + (inpc - 1) > MAX_TOKENS) {
-    fprintf(stderr, "ERROR: Exceeded token limit (%d). Total number of commands/arguments cannot exceed this value.\n", MAX_TOKENS);
-    return -1;
-  }
-  // shift elements to the right
-  for (int i = (argc - 1); i > index; i--) {
-    arr[i + (inpc-1)] = strdup(arr[i]);
-  }
-  arr[argc + (inpc-1)] = NULL;
-  copyArr(inp, &arr[index], inpc);
-  return argc + (inpc-1);
-}
-
+/* Returns the length of an array of strings (excluding the null terminator). */
 int arrLength(char* arr[]){
   int i = 0;
   while(arr[i] != NULL){
     i++;
   }
   return i;
+}
+
+/* Frees the memory allocated to an null-terminated array of strings. */
+void freeNTArr(char* arr[]) {
+  int i = 0;
+  while (arr[i] != NULL) {
+    free(arr[i]);
+    i++;
+  }
 }

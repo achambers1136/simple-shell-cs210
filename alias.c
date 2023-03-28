@@ -84,6 +84,7 @@ int parseAliases(int argc, char* argv[]) {
         if (newArrLen == -1) return -1; // err
     }
 
+    freeNTArr(argv); // free old argv
     copyNTArr(newArr, argv, newArrLen);
     return newArrLen;
 }
@@ -91,7 +92,7 @@ int parseAliases(int argc, char* argv[]) {
 void remove_alias(int index) {
     free(aliases[index]);
     aliases[index] = NULL;
-    // TODO: create free array function
+    freeNTArr(aliasValues[index]);
     aliasValues[index][0] = NULL;
     aliasSize--;
 
@@ -102,14 +103,19 @@ void remove_alias(int index) {
 
         // shift remaining aliases to the left
         while (index != aliasTail) {
+            free(aliases[index]);
             aliases[index] = strdup(aliases[(index + 1) % MAX_ALIASES]);
+
+            freeNTArr(aliasValues[index]);
             copyNTArr(aliasValues[(index + 1) % MAX_ALIASES], aliasValues[index], arrLength(aliasValues[(index + 1) % MAX_ALIASES]));
+
             index = (index + 1) % MAX_ALIASES;
         }
 
         free(aliases[aliasTail]);
         aliases[aliasTail] = NULL;
-        // TODO: create free array function
+        freeNTArr(aliasValues[aliasTail]);
+        aliasValues[aliasTail][0] = NULL;
 
         aliasTail--;
         if (aliasTail == -1) aliasTail = MAX_ALIASES - 1;
