@@ -68,14 +68,11 @@ int main ( int argc, char* argv[] ) {
 
         char* tokens[MAX_TOKEN_ARR];   // stores tokenised command split by delimiters
         int tn = parseDelimiterArray(tokens, inp, " \t\n|><&;"); // get number of tokens within newly filled + tokenised 'tokens' array
-
-        /*for (int i=0; i<tn; i++) {
-            printf("[%d] %s\n", i, tokens[i]);//stage1 debug
-        }*/
         
         // Execute command
         status = shell_exec(tn, tokens);
         
+        freeNTArr(tokens); // free memory allocated to tokens array
         if (status == 70) break; // custom final exit code
     }
 

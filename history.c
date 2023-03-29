@@ -42,6 +42,7 @@ int addToHistory(int argc, char* argv[]) {
 
     if (tail == head) {
       head = (head + 1) % MAX_HISTORY_SIZE;
+      freeNTArr(history[tail]); // frees old head
     }
   }
 

@@ -38,9 +38,12 @@ int check_alias(char* token, char* argvOut[], int index, List alias_chain){
     int curLen = 1;
     //check all but tail
     int h = aliasHead;
+    int rep = 0; // if alias match is found
     for(;;) {
 
         if (strcmp(aliases[h], token) == 0){
+            rep = 1;
+
             if (contains(alias_chain, token)){
                 printf("ERROR: Alias loop detected.\n\n");
                 return -1;
@@ -49,6 +52,13 @@ int check_alias(char* token, char* argvOut[], int index, List alias_chain){
             push(alias_chain, token); // add to chain
 
             int count = arrLength(aliasValues[h]);
+
+            if (index + (count-1) >= MAX_TOKEN_ARR) {
+                fprintf(stderr, "ERROR: Unaliased command has exceeded token limit (%d). Total number of commands/arguments cannot exceed this value.\n\n", MAX_TOKENS);
+                curLen = -1;
+                break;
+            }
+
             copyNTArr(aliasValues[h], &argvOut[index], count);
             
             curLen += count - 1;
@@ -56,17 +66,24 @@ int check_alias(char* token, char* argvOut[], int index, List alias_chain){
             for (int i = 0; i < count; i++){
                 int c = check_alias(aliasValues[h][i], argvOut, index + i, copy_list(alias_chain));
                 if (c == -1) return -1; // err
-                index += c;
+                index += c - 1;
                 curLen += c - 1;
             }
 
             break;
-        } else {
-            argvOut[index] = strdup(token);
         }
 
         if (h == aliasTail) break; // break if tail
         h = (h + 1) % MAX_ALIASES;
+    }
+
+    if (!rep) {
+        if (index >= MAX_TOKENS) {
+            fprintf(stderr, "ERROR: Unaliased command has exceeded token limit (%d). Total number of commands/arguments cannot exceed this value.\n\n", MAX_TOKENS);
+            curLen = -1;
+        } else {
+            argvOut[index] = strdup(token); 
+        }        
     }
 
     clear(alias_chain);
@@ -80,10 +97,12 @@ int parseAliases(int argc, char* argv[]) {
     char* newArr[MAX_TOKEN_ARR];
 
     for (int i = 0; i < argc; i++){
-        newArrLen += check_alias(argv[i], newArr, newArrLen, new_list());
-        if (newArrLen == -1) return -1; // err
+        int c = check_alias(argv[i], newArr, newArrLen, new_list());
+        if (c == -1) return -1; // err
+        newArrLen += c;
     }
 
+    freeNTArr(argv); // free old argv
     copyNTArr(newArr, argv, newArrLen);
     return newArrLen;
 }
@@ -91,7 +110,7 @@ int parseAliases(int argc, char* argv[]) {
 void remove_alias(int index) {
     free(aliases[index]);
     aliases[index] = NULL;
-    // TODO: create free array function
+    freeNTArr(aliasValues[index]);
     aliasValues[index][0] = NULL;
     aliasSize--;
 
@@ -102,14 +121,19 @@ void remove_alias(int index) {
 
         // shift remaining aliases to the left
         while (index != aliasTail) {
+            free(aliases[index]);
             aliases[index] = strdup(aliases[(index + 1) % MAX_ALIASES]);
+
+            freeNTArr(aliasValues[index]);
             copyNTArr(aliasValues[(index + 1) % MAX_ALIASES], aliasValues[index], arrLength(aliasValues[(index + 1) % MAX_ALIASES]));
+
             index = (index + 1) % MAX_ALIASES;
         }
 
         free(aliases[aliasTail]);
         aliases[aliasTail] = NULL;
-        // TODO: create free array function
+        freeNTArr(aliasValues[aliasTail]);
+        aliasValues[aliasTail][0] = NULL;
 
         aliasTail--;
         if (aliasTail == -1) aliasTail = MAX_ALIASES - 1;
